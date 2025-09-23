@@ -7,6 +7,12 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.UpdateItem;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 public class ItemService {
 
@@ -58,6 +64,32 @@ public class ItemService {
         return ItemMapper.mapToDto(item);
     }
 
-    // Продолжить тут
+    public List<ItemDto> getAllUsersItems(int id) {
+        return itemStorage.getAllUsersItems(id)
+                .stream()
+                .map(ItemMapper::mapToDto)
+                .toList();
+    }
+
+    public List<ItemDto> getItemsByQuery(String query) {
+        if (query.isBlank()) {
+            return new ArrayList<ItemDto>();
+        }
+        String[] queryArray = query.trim().split("[,.]");
+        Set<String> querySet = Arrays.stream(queryArray)
+                .filter(s -> !s.equals(" "))
+                .collect(Collectors.toSet());
+        List<Item> items = itemStorage.getByQuery(querySet);
+        return items.stream().map(ItemMapper::mapToDto).toList();
+    }
+
+    public ItemDto deleteItem(int userId, int itemId) {
+        Item item = itemStorage.getItemById(itemId);
+        if (item.getOwnerUser().getId() != userId) {
+            throw new PermissionException("Не достаточно прав для удаления объекта");
+        }
+        itemStorage.deleteItem(itemId);
+        return ItemMapper.mapToDto(item);
+    }
 
 }
