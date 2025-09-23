@@ -31,7 +31,7 @@ public class ItemService {
     public ItemDto update(int userId, int itemId, UpdateItem updateItem) {
         Item item = itemStorage.getItemById(itemId);
 
-        if (item.getOwnerUser() == null || !(item.getOwnerUser().getId() == userId)) {
+        if (item.getOwnerUser() == null || (item.getOwnerUser().getId() != userId)) {
             throw new PermissionException("Не достаточно прав для обновления объекта или пользователь не был найден");
         }
 
@@ -41,7 +41,7 @@ public class ItemService {
 
     }
 
-    private Item updateUsersFields(UpdateItem updateItem, Item item) {
+    private void updateUsersFields(UpdateItem updateItem, Item item) {
 
         if (updateItem.getName() != null) {
             item.setName(updateItem.getName());
@@ -51,11 +51,9 @@ public class ItemService {
             item.setDescription(updateItem.getDescription());
         }
 
-        if (updateItem.getIsAvailable() != null) {
-            item.setIsAvailable(Boolean.valueOf(updateItem.getIsAvailable()));
+        if (updateItem.getAvailable() != null) {
+            item.setAvailable(Boolean.valueOf(updateItem.getAvailable()));
         }
-
-        return item;
 
     }
 

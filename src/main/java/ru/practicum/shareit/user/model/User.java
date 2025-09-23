@@ -2,6 +2,8 @@ package ru.practicum.shareit.user.model;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * TODO Sprint add-controllers.
  */
@@ -18,6 +20,19 @@ public class User {
         this.email = email;
         this.name = name;
 
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        User user = (User) object;
+        return Objects.equals(getEmail(), user.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getEmail());
     }
 
 }

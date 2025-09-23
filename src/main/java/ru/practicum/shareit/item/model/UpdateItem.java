@@ -11,5 +11,5 @@ public class UpdateItem {
     @Size(max = 400)
     private String description;
     @Pattern(regexp = "^true?$|^false?$")
-    private String isAvailable;
+    private String available;
 }

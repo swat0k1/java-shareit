@@ -10,31 +10,31 @@ public class Item {
     private int id;
     private String name;
     private String description;
-    private Boolean isAvailable;
+    private Boolean available;
     private User ownerUser;
     private ItemRequest itemRequest;
 
-    public Item(int id, String name, String description, Boolean isAvailable, User ownerUser, ItemRequest itemRequest) {
+    public Item(int id, String name, String description, Boolean available, User ownerUser, ItemRequest itemRequest) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.isAvailable = isAvailable;
+        this.available = available;
         this.ownerUser = ownerUser;
         this.itemRequest = itemRequest;
     }
 
-    public Item(int id, String name, String description, Boolean isAvailable, User ownerUser) {
+    public Item(int id, String name, String description, Boolean available, User ownerUser) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.isAvailable = isAvailable;
+        this.available = available;
         this.ownerUser = ownerUser;
     }
 
-    public Item(String name, String description, Boolean isAvailable, User ownerUser, ItemRequest itemRequest) {
+    public Item(String name, String description, Boolean available, User ownerUser, ItemRequest itemRequest) {
         this.name = name;
         this.description = description;
-        this.isAvailable = isAvailable;
+        this.available = available;
         this.ownerUser = ownerUser;
         this.itemRequest = itemRequest;
     }

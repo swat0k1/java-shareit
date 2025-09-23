@@ -18,15 +18,15 @@ public class ItemDto {
     private String description;
     @NotBlank
     @Pattern(regexp = "^true?$|^false?$")
-    private String isAvailable;
+    private String available;
     private User ownerUser;
 
-    public ItemDto(int id, String name, String description, String isAvailable, User ownerUser) {
+    public ItemDto(int id, String name, String description, String available, User ownerUser) {
 
         this.id = id;
         this.name = name;
         this.description = description;
-        this.isAvailable = isAvailable;
+        this.available = available;
         this.ownerUser = ownerUser;
 
     }

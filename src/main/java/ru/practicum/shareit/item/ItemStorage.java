@@ -28,6 +28,11 @@ public class ItemStorage {
 
     public Item createItem(int userId, Item item) {
         User user = userStorage.getUserById(userId);
+
+        if (user == null) {
+            throw new NotFoundException("Пользователь не был найден");
+        }
+
         item.setId(getId());
         item.setOwnerUser(user);
         items.put(item.getId(), item);
@@ -55,13 +60,20 @@ public class ItemStorage {
 
     public List<Item> getByQuery(Set<String> text) {
         return items.values().stream()
-                .filter(Item::getIsAvailable)
+                .filter(Item::getAvailable)
                 .filter(item -> text.stream().anyMatch(string ->
                         item.getName().matches("(?i)" + string) || item.getDescription().matches("(?i)" + string)))
                 .toList();
     }
 
     public void deleteItem(int id) {
+
+        Item item = items.remove(id);
+
+        if (item == null) {
+            throw new NotFoundException("Предмет id = " + id + " не найден!");
+        }
+
         items.remove(id);
     }
 }
