@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.UserDataException;
@@ -11,17 +12,18 @@ import java.util.Map;
 import java.util.Objects;
 
 @Repository
+@Slf4j
 public class UserStorage {
 
     private int id = 1;
     private Map<Integer, User> users = new HashMap<>();
 
     public User getUserById(int id) {
-        try {
-            return users.get(id);
-        } catch (RuntimeException e) {
+        User user = users.get(id);
+        if (user == null) {
             throw new NotFoundException("Пользователь id = " + id + " не найден!");
         }
+        return user;
     }
 
     public User createUser(User user) {

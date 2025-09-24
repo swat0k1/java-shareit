@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Repository
+@Slf4j
 public class ItemStorage {
 
     private int id = 1;
@@ -44,11 +46,11 @@ public class ItemStorage {
     }
 
     public Item getItemById(int id) {
-        try {
-            return items.get(id);
-        } catch (RuntimeException e) {
+        Item item = items.get(id);
+        if (item == null) {
             throw new NotFoundException("Предмет id = " + id + " не найден!");
         }
+        return item;
     }
 
     public List<Item> getAllUsersItems(int id) {
@@ -62,8 +64,9 @@ public class ItemStorage {
         return items.values().stream()
                 .filter(Item::getAvailable)
                 .filter(item -> text.stream().anyMatch(string ->
-                        item.getName().matches("(?i)" + string) || item.getDescription().matches("(?i)" + string)))
-                .toList();
+                        item.getName().toLowerCase().contains(string.toLowerCase()) ||
+                                item.getDescription().toLowerCase().contains(string.toLowerCase())
+                )).toList();
     }
 
     public void deleteItem(int id) {
@@ -73,7 +76,5 @@ public class ItemStorage {
         if (item == null) {
             throw new NotFoundException("Предмет id = " + id + " не найден!");
         }
-
-        items.remove(id);
     }
 }

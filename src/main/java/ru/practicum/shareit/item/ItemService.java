@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.PermissionException;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ItemService {
 
     private final ItemStorage itemStorage;
@@ -75,7 +77,8 @@ public class ItemService {
         }
         String[] queryArray = query.trim().split("[,.]");
         Set<String> querySet = Arrays.stream(queryArray)
-                .filter(s -> !s.equals(" "))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
                 .collect(Collectors.toSet());
         List<Item> items = itemStorage.getByQuery(querySet);
         return items.stream().map(ItemMapper::mapToDto).toList();

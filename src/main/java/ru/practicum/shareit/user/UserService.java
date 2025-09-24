@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -9,6 +10,7 @@ import ru.practicum.shareit.user.model.User;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserService {
 
     private final UserStorage userStorage;
