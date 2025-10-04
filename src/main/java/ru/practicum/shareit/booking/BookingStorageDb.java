@@ -24,7 +24,9 @@ public interface BookingStorageDb extends JpaRepository<Booking, Integer> {
     List<Booking> findAllByBookerIdAndCurrentBookings(@Param("bookerId") int bookerId, @Param("time") LocalDateTime time);
 
     List<Booking> findAllByBookingUserIdAndEndBookingIsBeforeOrderByStartBookingDesc(int bookerId, LocalDateTime time);
+
     List<Booking> findAllByBookingUserIdAndStartBookingIsAfterOrderByStartBookingDesc(int bookerId, LocalDateTime time);
+
     List<Booking> findAllByBookingUserIdAndBookingStatusOrderByStartBookingDesc(int bookerId, BookingStatus status);
 
     List<Booking> findAllByItemOwnerUserIdOrderByStartBookingDesc(int ownerId);
@@ -33,7 +35,9 @@ public interface BookingStorageDb extends JpaRepository<Booking, Integer> {
     List<Booking> findAllByItemUserIdAndCurrentBookings(@Param("ownerId") int ownerId, @Param("time") LocalDateTime time);
 
     List<Booking> findAllByItemOwnerUserIdAndEndBookingIsBeforeOrderByStartBookingDesc(int ownerId, LocalDateTime time);
+
     List<Booking> findAllByItemOwnerUserIdAndStartBookingIsAfterOrderByStartBookingDesc(int ownerId, LocalDateTime time);
+
     List<Booking> findAllByItemOwnerUserIdAndBookingStatusOrderByStartBookingDesc(int ownerId, BookingStatus status);
 
     @Query("select new ru.practicum.shareit.booking.model.BookingDates(b1.item.id, max(b1.endBooking), min(b2.startBooking)) from Booking b1 " +
