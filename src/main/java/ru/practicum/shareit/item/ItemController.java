@@ -3,6 +3,9 @@ package ru.practicum.shareit.item;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.comment.dto.CreateCommentDto;
+import ru.practicum.shareit.item.dto.ItemDateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.UpdateItem;
 
@@ -33,12 +36,12 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable(name = "itemId") int itemId) {
+    public ItemDateDto getItemById(@PathVariable(name = "itemId") int itemId) {
         return itemService.getItemById(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getAllUsersItems(@RequestHeader(REQUEST_HEADER) int userId) {
+    public List<ItemDateDto> getAllUsersItems(@RequestHeader(REQUEST_HEADER) int userId) {
         return itemService.getAllUsersItems(userId);
     }
 
@@ -50,5 +53,11 @@ public class ItemController {
     @DeleteMapping("/{itemId}")
     public ItemDto delete(@RequestHeader(REQUEST_HEADER) int userId, @PathVariable(name = "itemId") int itemId) {
         return itemService.deleteItem(userId, itemId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader(REQUEST_HEADER) int bookerId, @PathVariable(name = "itemId") int itemId,
+                                @Valid @RequestBody CreateCommentDto commentDto) {
+        return itemService.addComment(bookerId, itemId, commentDto);
     }
 }

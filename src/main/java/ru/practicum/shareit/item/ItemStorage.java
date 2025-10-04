@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Deprecated
 @Repository
 @Slf4j
 public class ItemStorage {
