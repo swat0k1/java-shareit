@@ -1,15 +1,26 @@
 package ru.practicum.shareit.user.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.Data;
 
 import java.util.Objects;
 
 @Data
+@Entity
+@Table(name = "users")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Email
     private String email;
     private String name;
+
+    public User() {
+
+    }
 
     public User(int id, String email, String name) {
 
