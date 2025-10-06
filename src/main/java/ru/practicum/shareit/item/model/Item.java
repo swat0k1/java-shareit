@@ -2,14 +2,12 @@ package ru.practicum.shareit.item.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 @Data
 @Entity
 @Table(name = "items")
-@NoArgsConstructor
 public class Item {
 
     @Id
@@ -23,6 +21,9 @@ public class Item {
     private User ownerUser;
     @Transient
     private ItemRequest itemRequest;
+
+    public Item() {
+    }
 
     public Item(int id, String name, String description, Boolean available, User ownerUser, ItemRequest itemRequest) {
         this.id = id;

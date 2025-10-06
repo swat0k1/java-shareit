@@ -3,12 +3,18 @@ package ru.practicum.shareit.booking.dto;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class BookingCreateDto {
 
     private int id;
@@ -22,11 +28,4 @@ public class BookingCreateDto {
     private int itemId;
     private BookingStatus bookingStatus;
 
-    public BookingCreateDto(int id, LocalDateTime start, LocalDateTime end, int itemId, BookingStatus bookingStatus) {
-        this.id = id;
-        this.start = start;
-        this.end = end;
-        this.itemId = itemId;
-        this.bookingStatus = bookingStatus;
-    }
 }

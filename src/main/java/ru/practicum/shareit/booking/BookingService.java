@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,21 +18,56 @@ import ru.practicum.shareit.user.UserStorageDb;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 public class BookingService {
 
     private final BookingStorageDb bookingStorageDb;
     private final ItemStorageDb itemStorageDb;
     private final UserStorageDb userStorageDb;
+    private final Map<BookingRequestState, BookingStrategy> bookerStrategyMapForBooker = new EnumMap<>(BookingRequestState.class);
+    private final Map<BookingRequestState, BookingStrategy> bookerStrategyMapForOwner = new EnumMap<>(BookingRequestState.class);
 
     public BookingService(BookingStorageDb bookingStorageDb, ItemStorageDb itemStorageDb, UserStorageDb userStorageDb) {
         this.bookingStorageDb = bookingStorageDb;
         this.itemStorageDb = itemStorageDb;
         this.userStorageDb = userStorageDb;
+    }
+
+    @PostConstruct
+    private void initBookerStrategiesForBooker() {
+        bookerStrategyMapForBooker.put(BookingRequestState.ALL,
+                (bookerId, now) -> bookingStorageDb.findAllByBookingUserIdOrderByStartBookingDesc(bookerId));
+        bookerStrategyMapForBooker.put(BookingRequestState.CURRENT,
+                (bookerId, now) -> bookingStorageDb.findAllByBookerIdAndCurrentBookings(bookerId, now));
+        bookerStrategyMapForBooker.put(BookingRequestState.PAST,
+                (bookerId, now) -> bookingStorageDb.findAllByBookingUserIdAndEndBookingIsBeforeOrderByStartBookingDesc(bookerId, now));
+        bookerStrategyMapForBooker.put(BookingRequestState.FUTURE,
+                (bookerId, now) -> bookingStorageDb.findAllByBookingUserIdAndStartBookingIsAfterOrderByStartBookingDesc(bookerId, now));
+        bookerStrategyMapForBooker.put(BookingRequestState.WAITING,
+                (bookerId, now) -> bookingStorageDb.findAllByBookingUserIdAndBookingStatusOrderByStartBookingDesc(bookerId, BookingStatus.WAITING));
+        bookerStrategyMapForBooker.put(BookingRequestState.REJECTED,
+                (bookerId, now) -> bookingStorageDb.findAllByBookingUserIdAndBookingStatusOrderByStartBookingDesc(bookerId, BookingStatus.REJECTED));
+    }
+
+    @PostConstruct
+    private void initBookerStrategiesForOwner() {
+        bookerStrategyMapForOwner.put(BookingRequestState.ALL,
+                (ownerId, now) -> bookingStorageDb.findAllByItemOwnerUserIdOrderByStartBookingDesc(ownerId));
+        bookerStrategyMapForOwner.put(BookingRequestState.CURRENT,
+                (ownerId, now) -> bookingStorageDb.findAllByItemUserIdAndCurrentBookings(ownerId, now));
+        bookerStrategyMapForOwner.put(BookingRequestState.PAST,
+                (ownerId, now) -> bookingStorageDb.findAllByItemOwnerUserIdAndEndBookingIsBeforeOrderByStartBookingDesc(ownerId, now));
+        bookerStrategyMapForOwner.put(BookingRequestState.FUTURE,
+                (ownerId, now) -> bookingStorageDb.findAllByItemOwnerUserIdAndStartBookingIsAfterOrderByStartBookingDesc(ownerId, now));
+        bookerStrategyMapForOwner.put(BookingRequestState.WAITING,
+                (ownerId, now) -> bookingStorageDb.findAllByItemOwnerUserIdAndBookingStatusOrderByStartBookingDesc(ownerId, BookingStatus.WAITING));
+        bookerStrategyMapForOwner.put(BookingRequestState.REJECTED,
+                (ownerId, now) -> bookingStorageDb.findAllByItemOwnerUserIdAndBookingStatusOrderByStartBookingDesc(ownerId, BookingStatus.REJECTED));
     }
 
     @Transactional
@@ -138,27 +174,21 @@ public class BookingService {
     }
 
     private List<Booking> getBookingsByStateForBooker(int bookerId, BookingRequestState bookingRequestState) {
-        LocalDateTime now = LocalDateTime.now();
-        return switch (bookingRequestState) {
-            case ALL -> bookingStorageDb.findAllByBookingUserIdOrderByStartBookingDesc(bookerId);
-            case CURRENT -> bookingStorageDb.findAllByBookerIdAndCurrentBookings(bookerId, now);
-            case PAST -> bookingStorageDb.findAllByBookingUserIdAndEndBookingIsBeforeOrderByStartBookingDesc(bookerId, now);
-            case FUTURE -> bookingStorageDb.findAllByBookingUserIdAndStartBookingIsAfterOrderByStartBookingDesc(bookerId, now);
-            case WAITING -> bookingStorageDb.findAllByBookingUserIdAndBookingStatusOrderByStartBookingDesc(bookerId, BookingStatus.WAITING);
-            case REJECTED -> bookingStorageDb.findAllByBookingUserIdAndBookingStatusOrderByStartBookingDesc(bookerId, BookingStatus.REJECTED);
-        };
+        LocalDateTime currentTimeForBookingCheck = LocalDateTime.now();
+        BookingStrategy strategy = bookerStrategyMapForBooker.get(bookingRequestState);
+        if (strategy == null) {
+            throw new IllegalArgumentException("Неверный статус запроса бронирования!");
+        }
+        return strategy.find(bookerId, currentTimeForBookingCheck);
     }
 
     private List<Booking> getBookingsByStateForOwner(int ownerId, BookingRequestState bookingRequestState) {
-        LocalDateTime now = LocalDateTime.now();
-        return switch (bookingRequestState) {
-            case ALL -> bookingStorageDb.findAllByItemOwnerUserIdOrderByStartBookingDesc(ownerId);
-            case CURRENT -> bookingStorageDb.findAllByItemUserIdAndCurrentBookings(ownerId, now);
-            case PAST -> bookingStorageDb.findAllByItemOwnerUserIdAndEndBookingIsBeforeOrderByStartBookingDesc(ownerId, now);
-            case FUTURE -> bookingStorageDb.findAllByItemOwnerUserIdAndStartBookingIsAfterOrderByStartBookingDesc(ownerId, now);
-            case WAITING -> bookingStorageDb.findAllByItemOwnerUserIdAndBookingStatusOrderByStartBookingDesc(ownerId, BookingStatus.WAITING);
-            case REJECTED -> bookingStorageDb.findAllByItemOwnerUserIdAndBookingStatusOrderByStartBookingDesc(ownerId, BookingStatus.REJECTED);
-        };
+        LocalDateTime currentTimeForBookingCheck = LocalDateTime.now();
+        BookingStrategy strategy = bookerStrategyMapForOwner.get(bookingRequestState);
+        if (strategy == null) {
+            throw new IllegalArgumentException("Неверный статус запроса бронирования!");
+        }
+        return strategy.find(ownerId, currentTimeForBookingCheck);
     }
 
     private boolean checkIdOfItemOwner(Booking booking, int userId) {

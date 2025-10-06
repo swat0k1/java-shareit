@@ -2,9 +2,15 @@ package ru.practicum.shareit.item.dto;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class ItemUpdateDto {
 
     @Size(max = 200)
@@ -13,10 +19,4 @@ public class ItemUpdateDto {
     private String description;
     @Pattern(regexp = "^true?$|^false?$")
     private String available;
-
-    public ItemUpdateDto(String name, String description, String available) {
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
 }

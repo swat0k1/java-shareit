@@ -14,7 +14,6 @@ import java.util.List;
 
 @Service
 @Slf4j
-@Transactional(readOnly = true)
 public class UserService {
 
     private final UserStorageDb userStorageDb;
