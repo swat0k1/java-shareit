@@ -1,46 +1,117 @@
 package ru.practicum.shareit.item;
 
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.BookingStorageDb;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingDates;
+import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.comment.CommentStorageDb;
+import ru.practicum.shareit.comment.dto.CommentDto;
+import ru.practicum.shareit.comment.dto.CommentMapper;
+import ru.practicum.shareit.comment.dto.CreateCommentDto;
+import ru.practicum.shareit.comment.model.Comment;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.PermissionException;
+import ru.practicum.shareit.item.dto.ItemDateDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.UpdateItem;
+import ru.practicum.shareit.user.UserStorageDb;
+import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Service
 @Slf4j
 public class ItemService {
 
-    private final ItemStorage itemStorage;
+    private final ItemStorageDb itemStorageDb;
+    private final UserStorageDb userStorageDb;
+    private final BookingStorageDb bookingStorageDb;
+    private final CommentStorageDb commentStorageDb;
 
-    public ItemService(ItemStorage itemStorage) {
-        this.itemStorage = itemStorage;
+    public ItemService(ItemStorageDb itemStorageDb, UserStorageDb userStorageDb,
+                       BookingStorageDb bookingStorageDb, CommentStorageDb commentStorageDb) {
+        this.itemStorageDb = itemStorageDb;
+        this.userStorageDb = userStorageDb;
+        this.bookingStorageDb = bookingStorageDb;
+        this.commentStorageDb = commentStorageDb;
     }
 
+    @Transactional
     public ItemDto create(int id, ItemDto itemDto) {
-        Item item = ItemMapper.mapToItem(itemDto);
-        itemStorage.createItem(id, item);
-        return ItemMapper.mapToDto(item);
+        User user = userStorageDb.findById(id).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        Item item = ItemMapper.mapToItem(itemDto, user);
+        return ItemMapper.mapToDto(itemStorageDb.save(item));
     }
 
+    @Transactional
     public ItemDto update(int userId, int itemId, UpdateItem updateItem) {
-        Item item = itemStorage.getItemById(itemId);
+        Item item = itemStorageDb.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет не найден"));
 
         if (item.getOwnerUser() == null || (item.getOwnerUser().getId() != userId)) {
             throw new PermissionException("Не достаточно прав для обновления объекта или пользователь не был найден");
         }
 
         updateUsersFields(updateItem, item);
-        itemStorage.updateItem(item);
-        return ItemMapper.mapToDto(item);
+        return ItemMapper.mapToDto(itemStorageDb.save(item));
 
+    }
+
+    public ItemDateDto getItemById(int id) {
+        Item item = itemStorageDb.findById(id).orElseThrow(() -> new NotFoundException("Предмет не найден"));
+        BookingDates bookingDates = bookingStorageDb.findBookingDates(id, LocalDateTime.now());
+        List<Comment> comments = commentStorageDb.findAllByItemId(id);
+        return ItemMapper.mapToItemDateDto(item, bookingDates, CommentMapper.mapToCommentDtos(comments));
+    }
+
+    public List<ItemDateDto> getAllUsersItems(int id) {
+        List<Item> items = itemStorageDb.findAllByOwnerUserId(id);
+        List<BookingDates> bookingDates = bookingStorageDb.findAllBookingsDatesOfUser(id, LocalDateTime.now());
+        List<Comment> comments = commentStorageDb.findAllByItemIdIn(items
+                .stream()
+                .map(Item::getId)
+                .toList());
+        List<CommentDto> commentDtos = CommentMapper.mapToCommentDtos(comments);
+        return ItemMapper.mapToItemDateDto(items, bookingDates, commentDtos);
+    }
+
+    public List<ItemDto> getItemsByQuery(String query) {
+        if (query.isBlank()) {
+            return new ArrayList<ItemDto>();
+        }
+        List<Item> items = itemStorageDb.findByQueryText(query);
+        return ItemMapper.mapToDtos(items);
+    }
+
+    @Transactional
+    public ItemDto deleteItem(int userId, int itemId) {
+        Item item = itemStorageDb.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет не найден"));
+        if (item.getOwnerUser().getId() != userId) {
+            throw new PermissionException("Не достаточно прав для удаления объекта");
+        }
+        itemStorageDb.deleteById(itemId);
+        return ItemMapper.mapToDto(item);
+    }
+
+    @Transactional
+    public CommentDto addComment(int userId, int itemId, CreateCommentDto createCommentDto) {
+        User user = userStorageDb.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        Item item = itemStorageDb.findById(itemId).orElseThrow(() -> new NotFoundException("Предмет не найден"));
+        List<Booking> bookings = bookingStorageDb.findAllByBookingUserIdAndItemIdAndBookingStatusAndEndBookingIsBefore(userId, itemId,
+                BookingStatus.APPROVED, LocalDateTime.now());
+        if (bookings.isEmpty()) {
+            throw new ValidationException("Пользователь не бронировал данный предмет");
+        }
+        Comment comment = CommentMapper.mapToComment(createCommentDto, user, item);
+        return CommentMapper.mapToCommentDto(commentStorageDb.save(comment));
     }
 
     private void updateUsersFields(UpdateItem updateItem, Item item) {
@@ -57,40 +128,6 @@ public class ItemService {
             item.setAvailable(Boolean.valueOf(updateItem.getAvailable()));
         }
 
-    }
-
-    public ItemDto getItemById(int id) {
-        Item item = itemStorage.getItemById(id);
-        return ItemMapper.mapToDto(item);
-    }
-
-    public List<ItemDto> getAllUsersItems(int id) {
-        return itemStorage.getAllUsersItems(id)
-                .stream()
-                .map(ItemMapper::mapToDto)
-                .toList();
-    }
-
-    public List<ItemDto> getItemsByQuery(String query) {
-        if (query.isBlank()) {
-            return new ArrayList<ItemDto>();
-        }
-        String[] queryArray = query.trim().split("[,.]");
-        Set<String> querySet = Arrays.stream(queryArray)
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toSet());
-        List<Item> items = itemStorage.getByQuery(querySet);
-        return items.stream().map(ItemMapper::mapToDto).toList();
-    }
-
-    public ItemDto deleteItem(int userId, int itemId) {
-        Item item = itemStorage.getItemById(itemId);
-        if (item.getOwnerUser().getId() != userId) {
-            throw new PermissionException("Не достаточно прав для удаления объекта");
-        }
-        itemStorage.deleteItem(itemId);
-        return ItemMapper.mapToDto(item);
     }
 
 }

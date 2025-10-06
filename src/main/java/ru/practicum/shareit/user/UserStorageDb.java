@@ -1,0 +1,10 @@
+package ru.practicum.shareit.user;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import ru.practicum.shareit.user.model.User;
+
+public interface UserStorageDb extends JpaRepository<User, Integer> {
+
+    boolean existsByEmail(String email);
+
+}

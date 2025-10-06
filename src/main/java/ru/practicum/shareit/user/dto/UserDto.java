@@ -2,9 +2,15 @@ package ru.practicum.shareit.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
+@AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class UserDto {
 
     private int id;
@@ -13,13 +19,4 @@ public class UserDto {
     private String email;
     @NotBlank
     private String name;
-
-    public UserDto(int id, String email, String name) {
-
-        this.id = id;
-        this.email = email;
-        this.name = name;
-
-    }
-
 }
