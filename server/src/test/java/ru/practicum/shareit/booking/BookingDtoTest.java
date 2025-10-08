@@ -44,23 +44,7 @@ public class BookingDtoTest {
     @Test
     void bookingDtoDeserializationTest() throws Exception {
         String jsonInput = """
-                    {"id": 1,
-                    "start": "2025-10-07T12:00:00",
-                    "end": "2025-10-07T12:01:00",
-                    "item": {
-                        "id": 1,
-                        "name": "Test",
-                        "description": "Test",
-                        "available": true,
-                        "ownerUser": null,
-                        "request": null
-                    },
-                    "booker": {
-                        "id": 1,
-                        "name": "Booker",
-                        "email": "booker@booker.ru"
-                    },
-                    "status": "APPROVED"}
+                {"id": 1,"start": "2025-10-07T12:00:00","end": "2025-10-07T12:01:00","item": {"id": 1,"name": "Test","description": "Test","available": true,"ownerUser": null,"request": null},"booker": {"id": 1,"name": "Booker","email": "booker@booker.ru"},"status": "APPROVED"}
                 """;
 
         BookingDto dto = json.parse(jsonInput).getObject();

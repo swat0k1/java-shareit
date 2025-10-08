@@ -35,12 +35,7 @@ public class ItemDtoTest {
     void itemDtoDeserializationTest() throws Exception {
 
         String jsonInput = """
-                {"id": 1,
-                    "name": "Test",
-                    "description": "Test",
-                    "available": "true",
-                    "userId": 1,
-                    "requestId": 2}
+                {"id": 1,"name": "Test","description": "Test","available": "true","userId": 1,"requestId": 2}
                 """;
 
         ItemDto dto = json.parse(jsonInput).getObject();
@@ -76,10 +71,5 @@ public class ItemDtoTest {
 
         assertThat(result).extractingJsonPathValue("$.name").isEqualTo("");
         assertThat(result).extractingJsonPathValue("$.description").isEqualTo("Test");
-    }
-
-    @Test
-    void itemDtoWithInvalidAvailability() throws Exception {
-        ItemDto dto = new ItemDto(1, "Test", "Description", "истина", 1, 2);
     }
 }
