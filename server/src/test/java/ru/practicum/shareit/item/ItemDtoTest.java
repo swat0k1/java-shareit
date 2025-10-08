@@ -35,14 +35,12 @@ public class ItemDtoTest {
     void itemDtoDeserializationTest() throws Exception {
 
         String jsonInput = """
-                {
-                    "id": 1,
+                {"id": 1,
                     "name": "Test",
                     "description": "Test",
                     "available": "true",
                     "userId": 1,
-                    "requestId": 2
-                }
+                    "requestId": 2}
                 """;
 
         ItemDto dto = json.parse(jsonInput).getObject();

@@ -124,7 +124,7 @@ public class BookingControllerTest {
     void findByIdCorrect() throws Exception {
         when(bookingService.findById(user.getId(), bookingDto.getId())).thenReturn(bookingDto);
 
-        mvc.perform(get(URL+ "/" + bookingDto.getId())
+        mvc.perform(get(URL + "/" + bookingDto.getId())
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)

@@ -67,7 +67,6 @@ public class ItemRequestControllerTest {
         itemRequestItemsDto.setItems(List.of(itemRequestData));
     }
 
-    
     @Test
     void create() throws Exception {
         ItemRequestCreateDto createDto = new ItemRequestCreateDto();
