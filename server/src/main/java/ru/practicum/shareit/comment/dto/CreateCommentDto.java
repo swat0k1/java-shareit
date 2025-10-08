@@ -1,8 +1,8 @@
 package ru.practicum.shareit.comment.dto;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class CreateCommentDto {
 
     private String text;
