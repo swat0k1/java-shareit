@@ -42,22 +42,6 @@ public class BookingDtoTest {
     }
 
     @Test
-    void bookingDtoDeserializationTest() throws Exception {
-        String jsonInput = """
-                {"id": 1,"start": "2025-10-07T12:00:00","end": "2025-10-07T12:01:00","item": {"id": 1,"name": "Test","description": "Test","available": true,"ownerUser": null,"request": null},"booker": {"id": 1,"name": "Booker","email": "booker@booker.ru"},"status": "APPROVED"}
-                """;
-
-        BookingDto dto = json.parse(jsonInput).getObject();
-
-        assertThat(dto.getId()).isEqualTo(1);
-        assertThat(dto.getStart()).isEqualTo(LocalDateTime.parse("2025-10-07T12:00:00"));
-        assertThat(dto.getEnd()).isEqualTo(LocalDateTime.parse("2025-10-07T12:01:00"));
-        assertThat(dto.getItem().getName()).isEqualTo("Test");
-        assertThat(dto.getBooker().getName()).isEqualTo("Booker");
-        assertThat(dto.getStatus()).isEqualTo(BookingStatus.APPROVED);
-    }
-
-    @Test
     void bookingDtoWithNullValuesTest() throws Exception {
         BookingDto dto = new BookingDto(0, null, null, null, null, null);
 

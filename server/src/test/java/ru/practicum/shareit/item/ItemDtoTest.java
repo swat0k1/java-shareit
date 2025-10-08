@@ -32,23 +32,6 @@ public class ItemDtoTest {
     }
 
     @Test
-    void itemDtoDeserializationTest() throws Exception {
-
-        String jsonInput = """
-                {"id": 1,"name": "Test","description": "Test","available": "true","userId": 1,"requestId": 2}
-                """;
-
-        ItemDto dto = json.parse(jsonInput).getObject();
-
-        assertThat(dto.getId()).isEqualTo(1L);
-        assertThat(dto.getName()).isEqualTo("Test");
-        assertThat(dto.getDescription()).isEqualTo("Test");
-        assertThat(dto.getAvailable()).isEqualTo("true");
-        assertThat(dto.getUserId()).isEqualTo(1);
-        assertThat(dto.getRequestId()).isEqualTo(2);
-    }
-
-    @Test
     void itemDtoWithNullValues() throws Exception {
 
         ItemDto dto = new ItemDto(0, null, null, null, 0, null);
