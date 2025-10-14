@@ -10,10 +10,10 @@ import java.util.Map;
 
 public class BaseClient {
 
-    protected final RestTemplate rest;
+    protected final RestTemplate restTemplate;
 
-    public BaseClient(RestTemplate rest) {
-        this.rest = rest;
+    public BaseClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     protected ResponseEntity<Object> getRequest(String path, Integer userId,
@@ -49,9 +49,9 @@ public class BaseClient {
 
         try {
             if (parameters != null) {
-                responseEntity = rest.exchange(path, method, requestEntity, Object.class, parameters);
+                responseEntity = restTemplate.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
-                responseEntity = rest.exchange(path, method, requestEntity, Object.class);
+                responseEntity = restTemplate.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());

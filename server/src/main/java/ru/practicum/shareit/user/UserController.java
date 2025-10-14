@@ -42,4 +42,5 @@ public class UserController {
     public UserDto deleteUser(@PathVariable(name = "userId") int userId) {
         return userService.deleteUser(userId);
     }
+
 }

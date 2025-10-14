@@ -22,4 +22,5 @@ public class ItemDateDto {
     private LocalDateTime nextBooking;
     private List<CommentDto> comments;
     private Integer requestId;
+
 }

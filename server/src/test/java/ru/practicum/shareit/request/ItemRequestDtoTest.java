@@ -17,13 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemRequestDtoTest {
 
-    private final JacksonTester<ItemRequestDto> itemRequestDtoJacksonTester;
+    private final JacksonTester<ItemRequestDto> itemRequestDtoTester;
 
     @Test
     void itemRequestDtoSerializationTest() throws Exception {
         ItemRequestDto itemRequestDto = createTestDto(1, "Test", 1);
 
-        JsonContent<ItemRequestDto> result = itemRequestDtoJacksonTester.write(itemRequestDto);
+        JsonContent<ItemRequestDto> result = itemRequestDtoTester.write(itemRequestDto);
 
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.description").isEqualTo("Test");
@@ -39,7 +39,7 @@ public class ItemRequestDtoTest {
         itemRequestDto.setRequestorId(null);
         itemRequestDto.setCreated(null);
 
-        JsonContent<ItemRequestDto> result = itemRequestDtoJacksonTester.write(itemRequestDto);
+        JsonContent<ItemRequestDto> result = itemRequestDtoTester.write(itemRequestDto);
 
         assertThat(result).extractingJsonPathValue("$.id").isEqualTo(0);
         assertThat(result).extractingJsonPathValue("$.description").isNull();
@@ -53,7 +53,7 @@ public class ItemRequestDtoTest {
         ItemRequestDto itemRequestDto = createTestDto(2, "Test", 2);
         itemRequestDto.setCreated(futureDate);
 
-        JsonContent<ItemRequestDto> result = itemRequestDtoJacksonTester.write(itemRequestDto);
+        JsonContent<ItemRequestDto> result = itemRequestDtoTester.write(itemRequestDto);
 
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(2);
         assertThat(result).extractingJsonPathStringValue("$.created").isEqualTo(futureDate.truncatedTo(ChronoUnit.SECONDS).toString());

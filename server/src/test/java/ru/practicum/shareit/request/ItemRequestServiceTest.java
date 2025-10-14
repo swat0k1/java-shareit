@@ -25,15 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemRequestServiceTest {
+
     private final ItemRequestService requestService;
     private final UserService userService;
     private final ItemService itemService;
 
-    UserDto requestor;
-    UserDto owner;
-    ItemRequestCreateDto itemRequestCreateDto;
-    ItemRequestDto itemRequestDto;
-    ItemDto itemDto;
+    private UserDto requestor;
+    private UserDto owner;
+    private ItemRequestCreateDto itemRequestCreateDto;
+    private ItemRequestDto itemRequestDto;
+    private ItemDto itemDto;
 
     @BeforeEach
     void setUp() {

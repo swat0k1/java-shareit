@@ -26,4 +26,5 @@ public class ItemDto {
     private String available;
     private Integer ownerUser;
     private Integer requestId;
+
 }

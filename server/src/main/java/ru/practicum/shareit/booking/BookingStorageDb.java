@@ -31,25 +31,8 @@ public interface BookingStorageDb extends JpaRepository<Booking, Integer> {
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"bookingUser", "item", "item.ownerUser"})
     List<Booking> findAllByItemOwnerUserIdAndBookingStatusOrderByStartBookingDesc(int ownerId, BookingStatus status);
 
-    /*
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"bookingUser", "item", "item.ownerUser"})
     List<Booking> findAllByBookingUserIdAndItemIdAndBookingStatusAndEndBookingIsBefore(int bookerId, int itemId, BookingStatus status, LocalDateTime time);
-     */
-
-    @Query("SELECT b FROM Booking b " +
-            "JOIN b.bookingUser u " +
-            "JOIN b.item i " +
-            "JOIN i.ownerUser o " +
-            "WHERE u.id = :bookerId " +
-            "AND i.id = :itemId " +
-            "AND b.bookingStatus = :status " +
-            "AND b.endBooking < :time")
-    List<Booking> findAllByBookingUserIdAndItemIdAndBookingStatusAndEndBookingIsBefore(
-            @Param("bookerId") int bookerId,
-            @Param("itemId") int itemId,
-            @Param("status") BookingStatus status,
-            @Param("time") LocalDateTime time
-    );
 
     @Query("SELECT b FROM Booking b WHERE b.bookingStatus = 'APPROVED' " +
             "AND b.item.id = ?1 " +

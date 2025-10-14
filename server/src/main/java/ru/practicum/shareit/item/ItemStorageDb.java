@@ -17,4 +17,5 @@ public interface ItemStorageDb extends JpaRepository<Item, Integer> {
     List<Item> findAllByItemRequestIdIn(List<Integer> requestIds);
 
     List<Item> findAllByItemRequestId(Integer requestId);
+
 }

@@ -11,6 +11,7 @@ public class UpdateUser {
     @Email
     private String email;
     private String name;
+
 }
 
 

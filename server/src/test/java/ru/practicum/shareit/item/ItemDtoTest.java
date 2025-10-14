@@ -14,14 +14,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemDtoTest {
 
-    private final JacksonTester<ItemDto> json;
+    private final JacksonTester<ItemDto> itemDtoTester;
 
     @Test
     void itemDtoSerializationTest() throws Exception {
 
         ItemDto itemDto = new ItemDto(1, "Test", "Test", "true", 1, 2);
 
-        JsonContent<ItemDto> result = json.write(itemDto);
+        JsonContent<ItemDto> result = itemDtoTester.write(itemDto);
 
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(itemDto.getId());
         assertThat(result).extractingJsonPathStringValue("$.name").isEqualTo(itemDto.getName());
@@ -36,7 +36,7 @@ public class ItemDtoTest {
 
         ItemDto dto = new ItemDto(0, null, null, null, 0, null);
 
-        JsonContent<ItemDto> result = json.write(dto);
+        JsonContent<ItemDto> result = itemDtoTester.write(dto);
 
         assertThat(result).extractingJsonPathValue("$.id").isEqualTo(0);
         assertThat(result).extractingJsonPathValue("$.name").isNull();
@@ -50,7 +50,7 @@ public class ItemDtoTest {
     void itemDtoWithEmptyName() throws Exception {
         ItemDto dto = new ItemDto(1, "", "Test", "true", 1, 2);
 
-        JsonContent<ItemDto> result = json.write(dto);
+        JsonContent<ItemDto> result = itemDtoTester.write(dto);
 
         assertThat(result).extractingJsonPathValue("$.name").isEqualTo("");
         assertThat(result).extractingJsonPathValue("$.description").isEqualTo("Test");

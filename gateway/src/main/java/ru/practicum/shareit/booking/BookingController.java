@@ -27,7 +27,7 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> updateBookingStatus(@RequestHeader(REQUEST_HEADER) Integer userId, @PathVariable(name = "bookingId") Integer bookingId,
-                                               @RequestParam(name = "approved") Boolean approved) {
+                                                      @RequestParam(name = "approved") Boolean approved) {
         return bookingClient.updateBookingStatus(userId, bookingId, approved);
     }
 
@@ -38,7 +38,7 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<Object> getAllBookingsOfBooker(@RequestHeader(REQUEST_HEADER) Integer userId,
-                                                          @RequestParam(name = "state", required = false, defaultValue = "all") String stateParam) {
+                                                         @RequestParam(name = "state", required = false, defaultValue = "all") String stateParam) {
         BookingRequestState state = BookingRequestState.from(stateParam).orElseThrow(() -> new ValidationException("Ошибочное состояние бронирования"));
         return bookingClient.getAllBookingsOfBooker(userId, state);
     }
@@ -49,6 +49,5 @@ public class BookingController {
         BookingRequestState state = BookingRequestState.from(stateParam).orElseThrow(() -> new ValidationException("Ошибочное состояние бронирования"));
         return bookingClient.getAllBookingsOfOwner(ownerId, state);
     }
-
 
 }

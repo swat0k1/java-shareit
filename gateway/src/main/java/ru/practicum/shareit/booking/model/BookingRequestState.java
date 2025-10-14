@@ -20,4 +20,5 @@ public enum BookingRequestState {
                 .filter(s -> s.name().equalsIgnoreCase(bookingRequestState))
                 .findFirst();
     }
+
 }

@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class BookingDtoTest {
 
-    private final JacksonTester<BookingDto> json;
+    private final JacksonTester<BookingDto> bookingDtoTester;
 
     @Test
     void bookingDtoSerializationTest() throws Exception {
@@ -31,7 +31,7 @@ public class BookingDtoTest {
         LocalDateTime end = start.plusSeconds(1);
         BookingDto dto = new BookingDto(1, start, end, item, booker, BookingStatus.APPROVED);
 
-        JsonContent<BookingDto> result = json.write(dto);
+        JsonContent<BookingDto> result = bookingDtoTester.write(dto);
 
         assertThat(result).hasJsonPathNumberValue("$.id", dto.getId());
         assertThat(result).hasJsonPathStringValue("$.start", start.toString());
@@ -45,7 +45,7 @@ public class BookingDtoTest {
     void bookingDtoWithNullValuesTest() throws Exception {
         BookingDto dto = new BookingDto(0, null, null, null, null, null);
 
-        JsonContent<BookingDto> result = json.write(dto);
+        JsonContent<BookingDto> result = bookingDtoTester.write(dto);
 
         assertThat(result).hasJsonPathValue(".id", null);
         assertThat(result).hasJsonPathValue(".start", null);
@@ -65,7 +65,7 @@ public class BookingDtoTest {
             LocalDateTime end = start.plusSeconds(1);
             BookingDto dto = new BookingDto(3, start, end, item, booker, status);
 
-            JsonContent<BookingDto> result = json.write(dto);
+            JsonContent<BookingDto> result = bookingDtoTester.write(dto);
 
             assertThat(result).hasJsonPathNumberValue("$.id", dto.getId());
             assertThat(result).hasJsonPathStringValue("$.status", status.toString());

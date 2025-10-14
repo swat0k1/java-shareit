@@ -12,4 +12,5 @@ public class BookingDates {
     private int itemId;
     private LocalDateTime previousBooking;
     private LocalDateTime nextBooking;
+
 }

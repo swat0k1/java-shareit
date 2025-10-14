@@ -197,4 +197,5 @@ public class BookingService {
                 .orElseThrow(() -> new WrongDataException("Неверный id пользователя"));
         return userId == itemOwnerId;
     }
+
 }

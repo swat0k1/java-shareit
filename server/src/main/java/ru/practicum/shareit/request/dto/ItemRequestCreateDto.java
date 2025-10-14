@@ -8,5 +8,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class ItemRequestCreateDto {
+
     private String description;
+
 }

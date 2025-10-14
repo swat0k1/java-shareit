@@ -56,7 +56,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@RequestHeader(REQUEST_HEADER) int bookerId, @PathVariable(name = "itemId") int itemId,
-                                @RequestBody CreateCommentDto commentDto) {
+                                 @RequestBody CreateCommentDto commentDto) {
         return itemService.addComment(bookerId, itemId, commentDto);
     }
+
 }

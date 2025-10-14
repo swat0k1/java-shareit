@@ -10,7 +10,9 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class ItemRequestCreateDto {
+
     @NotBlank
     @Size(max = 512)
     private String description;
+
 }

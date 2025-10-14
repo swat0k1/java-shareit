@@ -10,4 +10,5 @@ public interface ItemRequestStorageDb extends JpaRepository<ItemRequest, Integer
     List<ItemRequest> findAllByRequestorIdNotOrderByCreatedDesc(Integer userId);
 
     List<ItemRequest> findAllByRequestorIdOrderByCreatedDesc(Integer requestorId);
+
 }

@@ -13,9 +13,11 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 public class ItemRequestItemsDto {
+
     private int id;
     private String description;
     private Integer requestorId;
     private LocalDateTime created;
     private List<ItemRequestData> items = new ArrayList<>();
+
 }

@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ItemServiceTest {
+
     private final ItemService itemService;
     private final UserService userService;
     private final ItemRequestService requestService;

@@ -17,4 +17,5 @@ public class ItemDto {
     private String available;
     private int userId;
     private Integer requestId;
+
 }

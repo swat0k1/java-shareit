@@ -27,7 +27,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@RequestHeader(REQUEST_HEADER) Integer userId, @PathVariable(name = "itemId") Integer itemId,
-            @Valid @RequestBody UpdateItem updateItem) {
+                                             @Valid @RequestBody UpdateItem updateItem) {
         return itemClient.updateItem(userId, itemId, updateItem);
     }
 
@@ -53,7 +53,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> addComment(@RequestHeader(REQUEST_HEADER) Integer bookerId, @PathVariable(name = "itemId") Integer itemId,
-            @Valid @RequestBody CreateCommentDto createCommentDto) {
+                                             @Valid @RequestBody CreateCommentDto createCommentDto) {
         return itemClient.createComment(bookerId, itemId, createCommentDto);
     }
+
 }

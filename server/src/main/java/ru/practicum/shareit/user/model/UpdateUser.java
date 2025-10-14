@@ -9,6 +9,7 @@ public class UpdateUser {
 
     private String email;
     private String name;
+
 }
 
 

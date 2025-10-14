@@ -35,4 +35,5 @@ public class ItemRequestController {
     public ResponseEntity<Object> getItemRequestById(@PathVariable(name = "requestId") Integer requestId) {
         return itemRequestClient.getItemRequestById(requestId);
     }
+
 }

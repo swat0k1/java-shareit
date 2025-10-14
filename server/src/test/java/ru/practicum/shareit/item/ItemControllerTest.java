@@ -39,7 +39,7 @@ public class ItemControllerTest {
 
     private ItemDto itemDto;
     private CommentDto commentDto;
-    ItemDateDto itemDateDto;
+    private ItemDateDto itemDateDto;
 
     private static final String URL = "/items";
     private static final String HEADER = "X-Sharer-User-Id";
